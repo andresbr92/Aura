@@ -33,3 +33,8 @@ void AAuraPlayerController::BeginPlay()
 	
 	SetInputMode(InputModeData);
 }
+
+void AAuraPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+}
