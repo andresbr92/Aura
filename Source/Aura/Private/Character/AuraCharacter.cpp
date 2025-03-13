@@ -3,30 +3,54 @@
 
 #include "Character/AuraCharacter.h"
 
+#include "AbilitySystemComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Player/AuraPlayerState.h"
+
 
 // Sets default values
 AAuraCharacter::AAuraCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
+    GetCharacterMovement()->bConstrainToPlane = true;
+    GetCharacterMovement()->bSnapToPlaneAtStart = true;
+
+
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationYaw = false;
+    bUseControllerRotationRoll = false;
+    
+}
+    /** 
+     * REMEMBER: Called when this Pawn is possessed. Only called on the server (or in standalone).
+     */
+
+void AAuraCharacter::PossessedBy(AController* NewController)
+{
+    Super::PossessedBy(NewController);
+    // Init ability actor info for the Server
+    InitAbilityActorInfo();
+
+    
 }
 
-// Called when the game starts or when spawned
-void AAuraCharacter::BeginPlay()
+void AAuraCharacter::OnRep_PlayerState()
 {
-	Super::BeginPlay();
-	
+    Super::OnRep_PlayerState();
+    // Init ability actor info for the Client
+    InitAbilityActorInfo();
+    
 }
 
-// Called every frame
-void AAuraCharacter::Tick(float DeltaTime)
+void AAuraCharacter::InitAbilityActorInfo()
 {
-	Super::Tick(DeltaTime);
+    AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+    check(AuraPlayerState);
+    AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
+    AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+    AttributeSet = AuraPlayerState->GetAttributeSet();
+    
 }
 
-// Called to bind functionality to input
-void AAuraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
 
