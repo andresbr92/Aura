@@ -1,17 +1,17 @@
 // AndresD3v
 
 
-#include "AuraAttributeSet.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 
 
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	InitHealth(100.f);
+	InitHealth(50.f);
 	InitMaxHealth(100.f);
-	InitMana(50.f);
-	InitMaxMana(50.f);
+	InitMana(25.f);
+	InitMaxMana(100.f);
 	
 }
 
