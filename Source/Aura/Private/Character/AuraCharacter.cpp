@@ -1,12 +1,12 @@
 // AndresD3v
 
-
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
-
+#include "UI/HUD/AuraHUD.h"
 
 // Sets default values
 AAuraCharacter::AAuraCharacter()
@@ -16,23 +16,19 @@ AAuraCharacter::AAuraCharacter()
     GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
-
     bUseControllerRotationPitch = false;
     bUseControllerRotationYaw = false;
     bUseControllerRotationRoll = false;
-    
 }
-    /** 
-     * REMEMBER: Called when this Pawn is possessed. Only called on the server (or in standalone).
-     */
+/**
+ * REMEMBER: Called when this Pawn is possessed. Only called on the server (or in standalone).
+ */
 
-void AAuraCharacter::PossessedBy(AController* NewController)
+void AAuraCharacter::PossessedBy(AController *NewController)
 {
     Super::PossessedBy(NewController);
     // Init ability actor info for the Server
     InitAbilityActorInfo();
-
-    
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -40,17 +36,30 @@ void AAuraCharacter::OnRep_PlayerState()
     Super::OnRep_PlayerState();
     // Init ability actor info for the Client
     InitAbilityActorInfo();
-    
 }
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
-    AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+    AAuraPlayerState *AuraPlayerState = GetPlayerState<AAuraPlayerState>();
     check(AuraPlayerState);
     AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
     AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
     AttributeSet = AuraPlayerState->GetAttributeSet();
+
+    /*
+     * Here we initialize the Overlay because we have all the data we need: the player controller, player state, ability system component and attribute set.
+     * Also, the HUD is accessible from the player controller.
+     */
     
+
+    if (AAuraPlayerController *AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+    {
+
+        AHUD *AHUD = AuraPlayerController->GetHUD();
+
+        if (AAuraHUD *AuraHUD = Cast<AAuraHUD>(AHUD))
+        {
+            AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+        }
+    }
 }
-
-
