@@ -71,12 +71,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "AppliedEffects")
 	EEffectRemovalPolicy InfiniteEffectRemovalPolicy = EEffectRemovalPolicy::RemoveOnEndOverlap;
 
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "AppliedEffects")
-	TMap<AActor*, FActiveGameplayEffectHandle> ActiveGameplayEffects;
 
-	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "AppliedEffects")
-	// TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveGameplayEffects;
+	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "AppliedEffects")
+	 TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
 	
 	
 };

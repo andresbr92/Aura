@@ -10,6 +10,33 @@
 /**
  * 
  */
+USTRUCT()
+struct FEffectProperties
+{
+	GENERATED_BODY()
+	FEffectProperties() {}
+	// Source properties
+	UPROPERTY()
+	FGameplayEffectContextHandle ContextHandle;
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC = nullptr;
+	UPROPERTY()
+	AActor* SourceAvatarActor = nullptr;
+	UPROPERTY()
+	AController* SourceController = nullptr;
+	UPROPERTY()
+	ACharacter* SourceCharacter = nullptr;
+	
+	// Target Properties
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC = nullptr;
+	UPROPERTY()
+	AActor* TargetAvatarActor = nullptr;
+	UPROPERTY()
+	AController* TargetController = nullptr;
+	UPROPERTY()
+	ACharacter* TargetCharacter = nullptr;
+};
 // Macro for attribute accessors
 // Functions: Getter, Setter, Initializer. The initializer set the base and current value!
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -25,6 +52,16 @@ class AURA_API UAuraAttributeSet : public UAttributeSet
 public:
 	UAuraAttributeSet();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	/**
+	 *	Called just before any modification happens to an attribute. This is lower level than PreAttributeModify/PostAttribute modify.
+	 *	There is no additional context provided here since anything can trigger this. Executed effects, duration based effects, effects being removed, immunity being applied, stacking rules changing, etc.
+	 *	This function is meant to enforce things like "Health = Clamp(Health, 0, MaxHealth)" and NOT things like "trigger this extra thing if damage is applied, etc".
+	 *	
+	 *	NewValue is a mutable reference so you are able to clamp the newly applied value as well.
+	 */
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
 
 
@@ -44,6 +81,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category= "Vital Attributes")
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
+
+	UPROPERTY()
+	FEffectProperties EffectProperties;
+private:
+	void SetEffectProperties(const struct FGameplayEffectModCallbackData& Data);
 	
 
 

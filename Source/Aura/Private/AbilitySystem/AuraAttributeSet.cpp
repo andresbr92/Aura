@@ -4,6 +4,9 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "GameplayEffectExtension.h"
+#include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
@@ -41,4 +44,109 @@ void UAuraAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 void UAuraAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, MaxMana, OldMaxMana);
+}
+
+void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	// Clamp the health value
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+	}
+
+	// Clamp the mana value
+	if (Attribute == GetManaAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	}
+	
+	
+	
+}
+
+
+
+void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+	
+	SetEffectProperties(Data);
+}
+/**
+ * Called after a GameplayEffect is executed. This function is used to gather information about the effect's source
+ * and target for further processing or reactions to the effect.
+ * 
+ * The function populates EffectProperties with data from the effect's context, which includes:
+ * - ContextHandle: Contains the full context of the effect execution
+ * - SourceASC: The AbilitySystemComponent of the actor that caused the effect
+ * - SourceAvatarActor: The actual actor (usually character) that caused the effect
+ * - SourceController: The player controller associated with the source actor
+ * - SourceCharacter: The character pawn controlled by the source controller
+ * 
+ * This information is crucial for:
+ * - Determining who caused the effect
+ * - Accessing the source actor's attributes and abilities
+ * - Handling player-specific logic
+ * - Implementing reactions or consequences based on the effect source
+ * 
+ * Controller and Character Casting Scenarios:
+ * 
+ * 1. AI-Controlled Character:
+ *    - SourceController will be nullptr initially
+ *    - SourceAvatarActor will be the AI character (APawn)
+ *    - We need to get the controller through Cast<APawn> to access the AIController
+ *    Example: An AI enemy applying a damage effect to the player
+ * 
+ * 2. Player-Controlled Character:
+ *    - SourceController will be available directly from AbilityActorInfo
+ *    - We can directly cast to ACharacter since we know it's a player character
+ *    Example: Player casting a healing spell on themselves
+ * 
+ * 3. Environmental Effect (No Controller):
+ *    - SourceController will be nullptr
+ *    - SourceAvatarActor might be nullptr or an environmental actor
+ *    Example: A poison cloud area effect that damages all characters within range
+ */
+void UAuraAttributeSet::SetEffectProperties(const struct FGameplayEffectModCallbackData& Data)
+{
+	// Target is the thing is being affected (attribute set)
+	// Source is the cause of the effect (in this case, effect actor)
+
+	EffectProperties.ContextHandle = Data.EffectSpec.GetContext();
+	
+	// Get the AbilitySystemComponent of the actor that caused the effect
+	EffectProperties.SourceASC = EffectProperties.ContextHandle.GetOriginalInstigatorAbilitySystemComponent();
+	
+	// Get the actual actor (usually character) that caused the effect
+	EffectProperties.SourceAvatarActor = EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.Get();
+	
+	// Get the player controller associated with the source actor
+	EffectProperties.SourceController = EffectProperties.SourceASC->AbilityActorInfo->PlayerController.Get();
+	
+	// Case 1: Handle AI or environmental effects where controller isn't directly available
+	// Example: AI enemy applying damage or environmental hazard affecting characters
+	if (EffectProperties.SourceController == nullptr && EffectProperties.SourceAvatarActor != nullptr)
+	{
+		if (const APawn* Pawn = Cast<APawn>(EffectProperties.SourceAvatarActor))
+		{
+			EffectProperties.SourceController = Pawn->GetController();
+		}
+	}
+	
+	// Case 2: Handle player-controlled character effects
+	// Example: Player casting spells or using abilities
+	if (EffectProperties.SourceController)
+	{
+		EffectProperties.SourceCharacter = Cast<ACharacter>(EffectProperties.SourceController->GetPawn());
+	}
+
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		EffectProperties.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+		EffectProperties.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
+		EffectProperties.TargetCharacter = Cast<ACharacter>(EffectProperties.TargetAvatarActor);
+		EffectProperties.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(EffectProperties.TargetAvatarActor);
+	}
 }
