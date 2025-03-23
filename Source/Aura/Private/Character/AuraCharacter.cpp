@@ -3,6 +3,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -40,10 +41,15 @@ void AAuraCharacter::OnRep_PlayerState()
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
+    Super::InitAbilityActorInfo();
     AAuraPlayerState *AuraPlayerState = GetPlayerState<AAuraPlayerState>();
     check(AuraPlayerState);
     AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
+    
     AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+    
+    // We call this function after de ability actor info to bind al functions to the ASC delegates
+    Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoHaveBeenSet();
     AttributeSet = AuraPlayerState->GetAttributeSet();
 
     /*

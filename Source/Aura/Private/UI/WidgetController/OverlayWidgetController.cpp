@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/OverlayWidgetController.h"
 
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
@@ -29,7 +30,37 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetManaAttribute()).AddUObject(this, &UOverlayWidgetController::ManaChanged);
 
 	// Bind MaxMana
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UOverlayWidgetController::ManaChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UOverlayWidgetController::MaxManaChanged);
+
+	// Bind Asset Tags
+	UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	AuraAbilitySystemComponent->OnEffectAssetTags.AddUObject(this, &UOverlayWidgetController::OnAssetTagReceivedFromGE);
+	
+	// Lambda for message delegates
+	AuraAbilitySystemComponent->OnEffectAssetTags.AddLambda(
+		// [this] is the capture list, in the case of this lambda, we want to capture this (OverlayWidgetController)
+		[this](const FGameplayTagContainer& AssetTags)
+	{
+		for (const auto& Tag : AssetTags)
+		{
+			// Declare the tag we want to check. In our case "MessageTag"
+			FGameplayTag ParentMessageGameplayTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+			if (Tag.MatchesTag(ParentMessageGameplayTag))
+			{
+				
+					
+				const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+				OnMessageWidgetRow.Broadcast(*Row);
+				
+			}
+			
+		}
+	});
+	
+}
+
+void UOverlayWidgetController::OnAssetTagReceivedFromGE(const FGameplayTagContainer& TagContainer) const
+{
 	
 }
 
