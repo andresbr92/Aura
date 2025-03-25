@@ -4,6 +4,7 @@
 #include "Character/AuraCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "Player/AuraPlayerState.h"
 
 // Sets default values
 AAuraCharacterBase::AAuraCharacterBase()
