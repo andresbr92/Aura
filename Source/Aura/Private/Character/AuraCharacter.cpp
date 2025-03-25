@@ -69,6 +69,6 @@ void AAuraCharacter::InitAbilityActorInfo()
         }
     }
     // We can call this ONLY in the server because attributes is marked as replicated. But is ok doing it here.
-    InitializePrimaryAttributes();
+    InitializeDefaultAttributes();
     
 }
