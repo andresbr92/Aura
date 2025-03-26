@@ -14,4 +14,6 @@ Build
 *.suo
 *.xcodeproj
 *.xcworkspace
-.idea/.idea.Aura.dir/.idea/workspace.xml
+# ignore all related to .idea
+.idea
+
