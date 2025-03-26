@@ -40,6 +40,8 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
 	UPROPERTY(EditAnywhere, Category= "Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
+	UPROPERTY(EditAnywhere, Category= "Attributes")
+	TSubclassOf<UGameplayEffect> VitalAttributes;
 
 	
 	void InitializeDefaultAttributes() const;
