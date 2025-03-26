@@ -17,7 +17,7 @@ public:
 	// Step 1. Constructor
 	UMMC_MaxHealth();
 
-	// Step 2. Override Main function
+	// Step 2. Override Main function CalculateBaseMagnitude_Implementation
 	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 
 	// Step 3. Declare a variable to capture the attribute we want
