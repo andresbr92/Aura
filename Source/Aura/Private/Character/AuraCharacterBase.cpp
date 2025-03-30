@@ -4,6 +4,7 @@
 #include "Character/AuraCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Player/AuraPlayerState.h"
 
 // Sets default values
@@ -52,6 +53,16 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 	ApplyGameplayEffectAttributes(DefaultPrimaryAttributes, 1.f);
 	ApplyGameplayEffectAttributes(DefaultSecondaryAttributes, 1.f);
 	ApplyGameplayEffectAttributes(VitalAttributes, 1.f);
+}
+
+void AAuraCharacterBase::GrantStartupAbilities()
+{
+	
+	// Return if we ARE NOT the server
+	if (!HasAuthority()) return;
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	AuraASC->GrantStartupAbilities(StartupAbilities);
+	
 }
 
 
