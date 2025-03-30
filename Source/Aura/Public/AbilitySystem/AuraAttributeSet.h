@@ -45,7 +45,11 @@ struct FEffectProperties
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+// This syntax is a fucking nightmare, but...ok
+template<class T>
+ using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
 UCLASS()
+
 class AURA_API UAuraAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
@@ -62,6 +66,11 @@ public:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
+	 /**
+	 * @brief Return the attribute info for a given attribute tag
+	 */
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 
 	/**
 	 * Vital Attributes
