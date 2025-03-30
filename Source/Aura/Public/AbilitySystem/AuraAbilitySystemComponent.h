@@ -18,11 +18,14 @@ public:
 
 	// Delegate to broadcast gameplayTags from asset (GE's)
 	FEffectAssetTags OnEffectAssetTags;
+
+	void GrantStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>> AbilitiesToGrant);
+
+	TArray<FGameplayAbilitySpecHandle> GrantedAbilities;
 protected:
 	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
 	FOnGameplayEffectAppliedDelegate OnGameplayEffectApplied;
-
-
+	
 	
 	
 };
