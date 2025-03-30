@@ -6,12 +6,13 @@
 #include "GameplayTagContainer.h"
 
 /**
- * AuraGameplayTags
- * Singleton containing native GameplayTags
+ * @brief Native GameplayTags Singleton. 
+ * @note You have to call the Get() function to access the gameplay tags.
  */
 struct FAuraGameplayTags
 {
 public:
+	
 	static FAuraGameplayTags& Get() { return GameplayTags; }
 
 	static void InitializeNativeGameplayTags();

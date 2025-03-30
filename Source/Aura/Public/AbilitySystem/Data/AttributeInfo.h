@@ -27,7 +27,8 @@ struct FAuraAttributeInfo
 	
 };
 /**
- * 
+ * @brief This is a data asset that contains the information for each attribute in the game.
+ * @note The attribute information is setted in the editor.
  */
 UCLASS()
 class AURA_API UAttributeInfo : public UDataAsset
@@ -35,6 +36,7 @@ class AURA_API UAttributeInfo : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	
 	/**
 	 * @brief Return the attribute info for a given attribute tag
 	 * @param AttributeTag The attribute tag to get the info for
@@ -42,6 +44,8 @@ public:
 	 * @return The attribute info for the given attribute tag
 	 */
 	FAuraAttributeInfo GetAttributeInfoByGameplayTag(const FGameplayTag& AttributeTag, bool bLogNotFound = false) const;
+
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FAuraAttributeInfo> AttributeInformation;
 	

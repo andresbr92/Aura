@@ -17,3 +17,5 @@ Build
 # ignore all related to .idea
 .idea
 
+.codebuddy/.gitignore
+.idea/.idea.Aura.dir/.idea/workspace.xml
