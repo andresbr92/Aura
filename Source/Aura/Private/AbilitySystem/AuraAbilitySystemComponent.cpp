@@ -16,6 +16,21 @@ void UAuraAbilitySystemComponent::AbilityActorInfoHaveBeenSet()
 	
 }
 
+void UAuraAbilitySystemComponent::GrantStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>> AbilitiesToGrant)
+{
+	if (!AbilitiesToGrant.IsEmpty())
+	{
+		for (auto Ability: AbilitiesToGrant)
+		{
+			// FGameplayAbilitySpec(TSubclassOf<UGameplayAbility> InAbilityClass, int32 InLevel = 1, int32 InInputID = INDEX_NONE, UObject* InSourceObject = nullptr);
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, 1);
+			AbilitySpec.SourceObject = this;
+			FGameplayAbilitySpecHandle AbilitySpecHandle = GiveAbility(AbilitySpec);
+			GrantedAbilities.Add(AbilitySpecHandle);
+		}
+	}
+}
+
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
                                                 const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle)
 {

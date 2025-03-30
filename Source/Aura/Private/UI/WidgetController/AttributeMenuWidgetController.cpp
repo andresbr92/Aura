@@ -3,12 +3,25 @@
 
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 
-#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/AttributeInfo.h"
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
+	UAuraAttributeSet * AuraAS = CastChecked<UAuraAttributeSet>(AttributeSet);
+	for (auto TagToAttributePair: AuraAS->TagsToAttributes)
+	{
+		
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(TagToAttributePair.Value()).AddLambda(
+		[this, TagToAttributePair](const FOnAttributeChangeData& Data)
+		{
+			FAuraAttributeInfo Info = AttributeInfo->GetAttributeInfoByGameplayTag(TagToAttributePair.Key);
+			// Clamp to 2 decimals
+			Info.AttributeValue = FMath::RoundToFloat(Data.NewValue * 100.0f) / 100.0f;
+			AttributeInfoDelegate.Broadcast(Info);
+			
+		});
+	}
 	
 }
 
@@ -20,7 +33,7 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 	for (auto Pair: AuraAS->TagsToAttributes)
 	{
 		FAuraAttributeInfo Info = AttributeInfo->GetAttributeInfoByGameplayTag(Pair.Key);
-		Info.AttributeValue = Pair.Value().GetNumericValue(AuraAS);
+		Info.AttributeValue = FMath::RoundToFloat(Pair.Value().GetNumericValue(AuraAS) * 100.0f) / 100.0f;
 		AttributeInfoDelegate.Broadcast(Info);
 	}
 	
