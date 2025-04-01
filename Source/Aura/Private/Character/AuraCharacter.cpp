@@ -12,7 +12,8 @@
 // Sets default values
 AAuraCharacter::AAuraCharacter()
 {
-    GetCharacterMovement()->bOrientRotationToMovement = true;
+    // Deshabilitamos la rotación automática hacia el movimiento para permitir nuestra rotación personalizada
+    GetCharacterMovement()->bOrientRotationToMovement = false;
     GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
     GetCharacterMovement()->bConstrainToPlane = true;
     GetCharacterMovement()->bSnapToPlaneAtStart = true;
@@ -48,6 +49,32 @@ int32 AAuraCharacter::GetPlayerLevel()
     return AuraPlayerState->GetPlayerLevel();
 }
 
+void AAuraCharacter::RotateTowardsMouse(const FVector& CursorLocation)
+{
+    // Calcular la dirección desde el personaje hacia el cursor
+    FVector Direction = CursorLocation - GetActorLocation();
+    // Ignoramos la altura (eje Z) para mantener la rotación en el plano XY
+    Direction.Z = 0.0f;
+    Direction = Direction.GetSafeNormal();
+
+    if (Direction.IsNearlyZero())
+    {
+        return;
+    }
+
+    // Convertir la dirección a una rotación (solo en el eje Yaw)
+    FRotator TargetRotation = Direction.Rotation();
+    // Solo queremos aplicar la rotación en el eje Yaw (horizontal)
+    TargetRotation.Pitch = 0.0f;
+    TargetRotation.Roll = 0.0f;
+
+    // Aplicar la rotación con suavizado
+    FRotator CurrentRotation = GetActorRotation();
+    FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), RotationSpeed);
+    
+    // Establecer la rotación del personaje
+    SetActorRotation(NewRotation);
+}
 
 void AAuraCharacter::InitAbilityActorInfo()
 {

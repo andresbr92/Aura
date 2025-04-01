@@ -19,12 +19,20 @@ public:
 	// Delegate to broadcast gameplayTags from asset (GE's)
 	FEffectAssetTags OnEffectAssetTags;
 
+	/**
+	 * Grants the startup abilities to the player.
+	 * @param AbilitiesToGrant: The abilities to grant to the player.
+	 * @note Also, this function store the handles of the abilities in the GrantedAbilities array. For each ability, we store the StartupInputTag in the AbilitySpec for later activation.
+	 */
 	void GrantStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>> AbilitiesToGrant);
+
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilities;
 protected:
-	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
-	FOnGameplayEffectAppliedDelegate OnGameplayEffectApplied;
+	UFUNCTION(Client, Reliable)
+	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 	
 	
 	

@@ -21,8 +21,13 @@ public:
 	virtual int32 GetPlayerLevel() override;
 	/** end Combat Interface */
 
+	// Rotates the character to face the direction of the mouse cursor
+	void RotateTowardsMouse(const FVector& CursorLocation);
 
 private:
 	virtual void InitAbilityActorInfo() override;
 
+	// Velocidad a la que el personaje rota hacia el cursor
+	UPROPERTY(EditDefaultsOnly, Category = "Character Movement")
+	float RotationSpeed = 10.0f;
 };
