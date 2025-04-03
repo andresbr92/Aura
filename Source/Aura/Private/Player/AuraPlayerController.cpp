@@ -28,13 +28,13 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	CursorTrace();
 	
 	// Rotar el personaje hacia la posición del cursor si es un AuraCharacter
-	if (AAuraCharacter* AuraChar = Cast<AAuraCharacter>(GetPawn()))
-	{
-		if (CursorHit.bBlockingHit)
-		{
-			AuraChar->RotateTowardsMouse(CursorHit.ImpactPoint);
-		}
-	}
+	// if (AAuraCharacter* AuraChar = Cast<AAuraCharacter>(GetPawn()))
+	// {
+	// 	if (CursorHit.bBlockingHit)
+	// 	{
+	// 		AuraChar->RotateTowardsMouse(CursorHit.ImpactPoint);
+	// 	}
+	// }
 }
 // void AAuraPlayerController::AutoRun()
 // {
@@ -194,18 +194,18 @@ void AAuraPlayerController::BeginPlay()
 	}
 
 	// Enable mouse cursor visibility on screen
-	bShowMouseCursor = true;
+	// bShowMouseCursor = true;
 	// Set the default system cursor
-	DefaultMouseCursor = EMouseCursor::Default;
+	// DefaultMouseCursor = EMouseCursor::Default;
 
 	// Configure input mode to allow both game controls and UI interaction
 	FInputModeGameAndUI InputModeData;
 	// Prevent cursor from being locked to the game window
-	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	// InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	// Keep cursor visible during input capture
-	InputModeData.SetHideCursorDuringCapture(false);
+	// InputModeData.SetHideCursorDuringCapture(false);
 	// Apply input mode configuration
-	SetInputMode(InputModeData);
+	// SetInputMode(InputModeData);
 }
 
 void AAuraPlayerController::SetupInputComponent()

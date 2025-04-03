@@ -18,6 +18,12 @@ public:
 
 	AAuraProjectile();
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+	UPROPERTY(EditAnywhere, Category="Projectile Propperties")
+	float InitialSpeed = 1100.f;
+	UPROPERTY(EditAnywhere, Category="Projectile Propperties")
+	float MaxSpeed = 1100.f;
+	UPROPERTY(EditAnywhere, Category="Projectile Propperties")
+	float ProjectileGravityScale = 0.2f;
 
 protected:
 	

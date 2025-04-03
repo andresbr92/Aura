@@ -3,7 +3,9 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "MotionWarpingComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -49,32 +51,21 @@ int32 AAuraCharacter::GetPlayerLevel()
     return AuraPlayerState->GetPlayerLevel();
 }
 
-void AAuraCharacter::RotateTowardsMouse(const FVector& CursorLocation)
-{
-    // Calcular la dirección desde el personaje hacia el cursor
-    FVector Direction = CursorLocation - GetActorLocation();
-    // Ignoramos la altura (eje Z) para mantener la rotación en el plano XY
-    Direction.Z = 0.0f;
-    Direction = Direction.GetSafeNormal();
 
-    if (Direction.IsNearlyZero())
-    {
-        return;
-    }
 
-    // Convertir la dirección a una rotación (solo en el eje Yaw)
-    FRotator TargetRotation = Direction.Rotation();
-    // Solo queremos aplicar la rotación en el eje Yaw (horizontal)
-    TargetRotation.Pitch = 0.0f;
-    TargetRotation.Roll = 0.0f;
-
-    // Aplicar la rotación con suavizado
-    FRotator CurrentRotation = GetActorRotation();
-    FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), RotationSpeed);
-    
-    // Establecer la rotación del personaje
-    SetActorRotation(NewRotation);
-}
+// FVector AAuraCharacter::GetCameraForwardVector()
+// {
+//     Camera = FindComponentByClass<UCameraComponent>();
+//     return Camera->GetForwardVector();
+// }
+//
+// void AAuraCharacter::SetFacingTarget()
+// {
+//     // get the motion Warping component
+//     UMotionWarpingComponent* MotionWarpingComponent = FindComponentByClass<UMotionWarpingComponent>();
+//     MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(FName("WarpTarget"), Camera->GetForwardVector().Rotation().Vector());
+//     
+// }
 
 void AAuraCharacter::InitAbilityActorInfo()
 {
@@ -108,7 +99,7 @@ void AAuraCharacter::InitAbilityActorInfo()
     // We can call this ONLY in the server because attributes is marked as replicated. But is ok doing it here.
     InitializeDefaultAttributes();
 
-    //
+    
    
     
 }

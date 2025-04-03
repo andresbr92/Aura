@@ -6,6 +6,8 @@
 #include "AuraCharacterBase.h"
 #include "AuraCharacter.generated.h"
 
+class UCameraComponent;
+
 UCLASS()
 class AURA_API AAuraCharacter : public AAuraCharacterBase
 {
@@ -20,14 +22,14 @@ public:
 	/** Combat Interface */
 	virtual int32 GetPlayerLevel() override;
 	/** end Combat Interface */
+	
 
-	// Rotates the character to face the direction of the mouse cursor
-	void RotateTowardsMouse(const FVector& CursorLocation);
+	// virtual FVector GetCameraForwardVector() override;
+	// virtual void SetFacingTarget() override;
+
 
 private:
 	virtual void InitAbilityActorInfo() override;
 
-	// Velocidad a la que el personaje rota hacia el cursor
-	UPROPERTY(EditDefaultsOnly, Category = "Character Movement")
-	float RotationSpeed = 10.0f;
+	
 };
