@@ -174,12 +174,14 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 {
 	Super::PostGameplayEffectExecute(Data);
 	
-	SetEffectProperties(Data);
+	FEffectProperties Props;
+	SetEffectProperties(Data, Props);
 
 	// Clamp again the health and mana values
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+		UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
 	}
 
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
@@ -223,44 +225,34 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
  *    - SourceAvatarActor might be nullptr or an environmental actor
  *    Example: A poison cloud area effect that damages all characters within range
  */
-void UAuraAttributeSet::SetEffectProperties(const struct FGameplayEffectModCallbackData& Data)
+void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
-	// Target is the thing is being affected (attribute set)
-	// Source is the cause of the effect (in this case, effect actor)
-
-	EffectProperties.ContextHandle = Data.EffectSpec.GetContext();
-	
-	// Get the AbilitySystemComponent of the actor that caused the effect
-	EffectProperties.SourceASC = EffectProperties.ContextHandle.GetOriginalInstigatorAbilitySystemComponent();
-	
-	// Get the actual actor (usually character) that caused the effect
-	EffectProperties.SourceAvatarActor = EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.Get();
-	
-	// Get the player controller associated with the source actor
-	EffectProperties.SourceController = EffectProperties.SourceASC->AbilityActorInfo->PlayerController.Get();
-	
-	// Case 1: Handle AI or environmental effects where controller isn't directly available
-	// Example: AI enemy applying damage or environmental hazard affecting characters
-	if (EffectProperties.SourceController == nullptr && EffectProperties.SourceAvatarActor != nullptr)
+	// Source = causer of the effect, Target = target of the effect (owner of this AS)
+	Props.EffectContextHandle = Data.EffectSpec.GetContext();
+	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
+ 
+	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
 	{
-		if (const APawn* Pawn = Cast<APawn>(EffectProperties.SourceAvatarActor))
+		Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
+		Props.SourceController = Props.SourceASC->AbilityActorInfo->PlayerController.Get();
+		if (Props.SourceController == nullptr && Props.SourceAvatarActor != nullptr)
 		{
-			EffectProperties.SourceController = Pawn->GetController();
+			if (const APawn* Pawn = Cast<APawn>(Props.SourceAvatarActor))
+			{
+				Props.SourceController = Pawn->GetController();
+			}
+		}
+		if (Props.SourceController)
+		{
+			ACharacter* SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn()); 
 		}
 	}
-	
-	// Case 2: Handle player-controlled character effects
-	// Example: Player casting spells or using abilities
-	if (EffectProperties.SourceController)
-	{
-		EffectProperties.SourceCharacter = Cast<ACharacter>(EffectProperties.SourceController->GetPawn());
-	}
-
+ 
 	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
-		EffectProperties.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
-		EffectProperties.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
-		EffectProperties.TargetCharacter = Cast<ACharacter>(EffectProperties.TargetAvatarActor);
-		EffectProperties.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(EffectProperties.TargetAvatarActor);
+		Props.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+		Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
+		Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
+		Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
 	}
 }

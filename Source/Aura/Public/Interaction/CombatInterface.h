@@ -24,11 +24,12 @@ class AURA_API ICombatInterface
 public:
 	virtual int32 GetPlayerLevel();
 	
-	UFUNCTION()
-	virtual FVector GetCombatSocketLocation();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	FVector GetCombatSocketLocation();
 	
-	UFUNCTION(BlueprintCallable)
-	virtual FVector GetCameraForwardVector();
-	UFUNCTION(BlueprintCallable)
-	virtual void SetFacingTarget();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	FVector GetCameraForwardVector();
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetFacingTarget();
 };

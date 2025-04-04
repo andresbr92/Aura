@@ -24,13 +24,13 @@ public:
 	// IAbilitySystemInterface Override
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
-
-	virtual FVector GetCombatSocketLocation() override;
+	// UFUNCTION()
+	// virtual FVector GetCombatSocketLocation() override;
 
 protected:
 
 	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Combat", BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

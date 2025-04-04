@@ -17,8 +17,8 @@ UActorCameraForwardDirection* UActorCameraForwardDirection::GetActorCameraForwar
 void UActorCameraForwardDirection::Activate()
 {
 	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActor());
-	
-	CameraForwardVectorDelegate.Broadcast(CombatInterface->GetCameraForwardVector());
+	// ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActor());
+	//
+	// CameraForwardVectorDelegate.Broadcast(CombatInterface->GetCameraForwardVector());
 	
 }

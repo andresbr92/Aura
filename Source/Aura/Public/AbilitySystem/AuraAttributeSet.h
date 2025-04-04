@@ -17,7 +17,7 @@ struct FEffectProperties
 	FEffectProperties() {}
 	// Source properties
 	UPROPERTY()
-	FGameplayEffectContextHandle ContextHandle;
+	FGameplayEffectContextHandle EffectContextHandle;
 	UPROPERTY()
 	UAbilitySystemComponent* SourceASC = nullptr;
 	UPROPERTY()
@@ -196,7 +196,7 @@ public:
 	UPROPERTY()
 	FEffectProperties EffectProperties;
 private:
-	void SetEffectProperties(const struct FGameplayEffectModCallbackData& Data);
+	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 	
 
 
