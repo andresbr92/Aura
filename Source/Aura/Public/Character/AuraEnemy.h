@@ -7,7 +7,7 @@
 #include "Interaction/EnemyInterface.h"
 #include "AuraEnemy.generated.h"
 class UWidgetComponent;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, AttributeValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyAttributeChangedSignature, float, AttributeValue);
 UCLASS()
 class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 {
@@ -39,7 +39,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
 	int32 Level = 1;
 	UPROPERTY(BlueprintAssignable)
-	FOnAttributeChangedSignature OnHealthChange;
+	FOnEnemyAttributeChangedSignature OnHealthChange;
+	UPROPERTY(BlueprintAssignable)
+	FOnEnemyAttributeChangedSignature OnMaxHealthChange;
 
 	
 };

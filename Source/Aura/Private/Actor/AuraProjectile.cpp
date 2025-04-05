@@ -56,7 +56,11 @@ void AAuraProjectile::Destroyed()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-		LoopSoundComponent->Stop();
+		if (LoopSoundComponent)
+		{
+			LoopSoundComponent->Stop();
+			
+		}
 	}
 	Super::Destroyed();
 }
