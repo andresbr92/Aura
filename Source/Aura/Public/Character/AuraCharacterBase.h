@@ -51,7 +51,7 @@ protected:
 	TSubclassOf<UGameplayEffect> VitalAttributes;
 
 	
-	void InitializeDefaultAttributes() const;
+	virtual void InitializeDefaultAttributes() const;
 
 
 	UPROPERTY(EditAnywhere, Category= "Abilties")

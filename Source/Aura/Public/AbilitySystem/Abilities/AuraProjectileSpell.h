@@ -23,4 +23,6 @@ protected:
 	TSubclassOf<AAuraProjectile> ProjectileClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
+public:
+	virtual float GetDamageByAbilityLevel(float AbilityLevel) const override;
 };

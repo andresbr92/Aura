@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -46,9 +47,18 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
 		FGameplayEffectContextHandle ContextHandle = SourceASC->MakeEffectContext();
 		ContextHandle.AddSourceObject(this);
-		 FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, 1.f, ContextHandle);
+		FGameplayEffectSpecHandle EffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, 1.f, ContextHandle);
+		
+		FAuraGameplayTags AuraGameplayTags = FAuraGameplayTags::Get();
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, AuraGameplayTags.Damage, 50.f);
+		
 		Projectile->DamageEffectSpecHandle = EffectSpecHandle;
 		
 		Projectile->FinishSpawning(SpawnTransform);
 	}
+}
+
+float UAuraProjectileSpell::GetDamageByAbilityLevel(float AbilityLevel) const
+{
+	return Damage.GetValueAtLevel(AbilityLevel);
 }
