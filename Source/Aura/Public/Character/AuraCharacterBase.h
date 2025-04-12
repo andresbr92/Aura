@@ -58,7 +58,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category= "Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
 	UPROPERTY(EditAnywhere, Category= "Attributes")
-	TSubclassOf<UGameplayEffect> VitalAttributes;
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 
 	
 	virtual void InitializeDefaultAttributes() const;
@@ -70,8 +70,21 @@ protected:
 	virtual void GrantStartupAbilities();
 
 	virtual void InitAbilityActorInfo();
+
+	// Dissolve Effects
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInstance> CharacterDissolveMaterialInstance;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+	
+	void ChangeMaterialOnDie();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolvingCharacter(UMaterialInstanceDynamic* MaterialInstanceDynamic);
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolvingWeapon(UMaterialInstanceDynamic* MaterialInstanceDynamic);
 private:
-	void ApplyGameplayEffectAttributes(TSubclassOf<UGameplayEffect> GameplayEffectToApply, float Level) const;
+	virtual void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
 
 	
 	

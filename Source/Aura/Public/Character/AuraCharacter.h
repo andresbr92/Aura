@@ -27,9 +27,6 @@ public:
 	// virtual FVector GetCameraForwardVector() override;
 	// virtual void SetFacingTarget() override;
 
-	
-
-
 private:
 	virtual void InitAbilityActorInfo() override;
 

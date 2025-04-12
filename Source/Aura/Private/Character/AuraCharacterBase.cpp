@@ -43,6 +43,7 @@ void AAuraCharacterBase::Die()
 	ICombatInterface::Die();
 	Weapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	MulticastHandleDeath();
+	
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
@@ -59,6 +60,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ChangeMaterialOnDie();
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -67,25 +69,39 @@ void AAuraCharacterBase::BeginPlay()
 	
 }
 
-void AAuraCharacterBase::ApplyGameplayEffectAttributes(TSubclassOf<UGameplayEffect> GameplayEffectToApply, float Level) const
+void AAuraCharacterBase::ChangeMaterialOnDie()
 {
-	check(DefaultPrimaryAttributes)
-	UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
-	if (ASC)
+	if (CharacterDissolveMaterialInstance)
 	{
-		FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
-		ContextHandle.AddSourceObject(this);
-
-		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(GameplayEffectToApply, Level, ContextHandle);
-
-		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-		
+		UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(CharacterDissolveMaterialInstance, this);
+		GetMesh()->SetMaterial(0, DynamicMaterial);
+		StartDissolvingCharacter(DynamicMaterial);
 	}
+	if (WeaponDissolveMaterialInstance)
+	{
+		UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+
+		Weapon->SetMaterial(0, DynamicMaterial);
+		StartDissolvingWeapon(DynamicMaterial);
+	}
+}
+
+void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(GameplayEffectClass);
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
 }
 
 
 void AAuraCharacterBase::InitializeDefaultAttributes() const
 {
+	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.f);
+	ApplyEffectToSelf(DefaultSecondaryAttributes, 1.f);
+	ApplyEffectToSelf(DefaultVitalAttributes, 1.f);
 }
 
 void AAuraCharacterBase::GrantStartupAbilities()
