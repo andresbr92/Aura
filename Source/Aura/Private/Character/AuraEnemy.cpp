@@ -84,6 +84,12 @@ void AAuraEnemy::BindCallbacksToDependencies()
 		&AAuraEnemy::HitReactTagChanged);
 }
 
+void AAuraEnemy::Die()
+{
+	SetLifeSpan(5.f);
+	Super::Die();
+}
+
 void AAuraEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);

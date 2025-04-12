@@ -39,6 +39,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category= "Combat")
 	float BaseWalkSpeed = 250.f;
 
+	virtual void Die() override;
+
 
 protected:
 	virtual void InitAbilityActorInfo() override;
