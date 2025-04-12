@@ -7,6 +7,7 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Interaction/EnemyInterface.h"
 #include "AuraEnemy.generated.h"
+struct FGameplayTag;
 class UWidgetComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyAttributeChangedSignature, float, AttributeValue);
 UCLASS()
@@ -33,6 +34,11 @@ public:
 	void BindCallbacksToDependencies();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
+	UPROPERTY(BlueprintReadOnly, Category= "Combat")
+	bool bHitReacting = false;
+	UPROPERTY(BlueprintReadOnly, Category= "Combat")
+	float BaseWalkSpeed = 250.f;
+
 
 protected:
 	virtual void InitAbilityActorInfo() override;
@@ -49,6 +55,10 @@ protected:
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnEnemyAttributeChangedSignature OnMaxHealthChange;
+
+	void HitReactTagChanged(const FGameplayTag, int32 TagCount);
+
+private:
 
 	
 };

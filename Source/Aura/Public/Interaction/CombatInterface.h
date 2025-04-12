@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
-
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
@@ -16,6 +15,7 @@ class UCombatInterface : public UInterface
 /**
  * 
  */
+class UAnimMontage;
 class AURA_API ICombatInterface
 {
 	GENERATED_BODY()
@@ -32,4 +32,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void SetFacingTarget();
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UAnimMontage* GetHitReactMontage();
+	
 };

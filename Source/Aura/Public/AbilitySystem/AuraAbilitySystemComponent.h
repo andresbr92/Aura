@@ -24,7 +24,7 @@ public:
 	 * @param AbilitiesToGrant: The abilities to grant to the player.
 	 * @note Also, this function store the handles of the abilities in the GrantedAbilities array. For each ability, we store the StartupInputTag in the AbilitySpec for later activation.
 	 */
-	void GrantStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>> AbilitiesToGrant);
+	void GrantStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGrant);
 
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);

@@ -17,7 +17,7 @@ void UAuraAbilitySystemComponent::AbilityActorInfoHaveBeenSet()
 	
 }
 
-void UAuraAbilitySystemComponent::GrantStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>> AbilitiesToGrant)
+void UAuraAbilitySystemComponent::GrantStartupAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGrant)
 {
 	if (!AbilitiesToGrant.IsEmpty())
 	{

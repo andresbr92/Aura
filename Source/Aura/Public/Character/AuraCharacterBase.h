@@ -27,6 +27,12 @@ public:
 	// UFUNCTION()
 	// virtual FVector GetCombatSocketLocation() override;
 
+	UPROPERTY(EditDefaultsOnly, Category= "Combat")
+	TObjectPtr<UAnimMontage> HitAnimMontage;
+
+	
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+
 protected:
 
 	virtual void BeginPlay() override;
