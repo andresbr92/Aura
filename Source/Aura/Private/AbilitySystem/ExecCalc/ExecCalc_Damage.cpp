@@ -7,7 +7,6 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
-#pragma optimize("", off)
 struct AuraDamageStatics
 {
 	// What it does: Creates an FGameplayEffectAttributeCaptureDefinition named AttributeNameDef (e.g., ArmorDef)
