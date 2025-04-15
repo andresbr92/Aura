@@ -4,7 +4,9 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
 struct AuraDamageStatics
@@ -65,6 +67,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
+	FGameplayEffectContextHandle EffectContextHandle = EffectSpec.GetContext();
+	
+
 	/**
 	 * Base Damage
 	 */ 
@@ -76,7 +81,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAuraDamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max<float>(0.f, TargetBlockChance);
 	bool bBlocked = FMath::RandRange(0, 100) < TargetBlockChance;
-	Damage = bBlocked && Damage /2.f;
+	
+	UAuraAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
+	
+	if (bBlocked)
+	{
+		Damage =  Damage /2.f;
+	}
 	/**
 	 * Armor Damage reduction
 	 */ 
@@ -117,7 +128,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 
 	bool bIsCriticalHit = FMath::RandRange(0.f, 100.f) < EffectiveCriticalHitChance;
-
+	UAuraAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bIsCriticalHit);
 	if (bIsCriticalHit)
 	{
 		Damage = Damage * 2 + SourceCriticalHitDamage;
