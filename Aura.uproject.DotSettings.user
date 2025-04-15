@@ -6,4 +6,5 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AXolivol_002Easm_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FLocal_003FTemp_003FSandboxFiles_003FNizenin_003FXolivol_002Easm/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=B4EA9473_002DC660_002DAB25_002DD47F_002DC7E41F68FC42_002Fd_003APublic_002Fd_003AAbilities_002Ff_003AGameplayAbility_002Eh/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/INDENT_SIZE/@EntryValue">2</s:Int64>
-	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/TAB_WIDTH/@EntryValue">2</s:Int64></wpf:ResourceDictionary>
+	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/TAB_WIDTH/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EFeature_002EServices_002ECpp_002ECodeStyle_002ESettingsUpgrade_002EFunctionReturnStyleSettingsUpgrader/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

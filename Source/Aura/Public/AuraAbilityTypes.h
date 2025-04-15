@@ -5,7 +5,8 @@
 #include "AuraAbilityTypes.generated.h"
 
 /**
-* @brief 	Custom GameplayEffectContext for Aura. This is used to store additional data for the gameplay effect.
+ *@brief The GameplayEffectContext structure holds information about a GameplayEffectSpec's instigator and TargetData.
+* Custom GameplayEffectContext for Aura. This is used to store additional data for the gameplay effect.
 * the additional data is:
 * - bIsCriticalHit: Whether the hit is a critical hit
 * - bIsBlocked: Whether the hit is blocked
@@ -31,10 +32,21 @@ public:
 	
 	virtual UScriptStruct* GetScriptStruct() const override
 	{
-		return FGameplayEffectContext::StaticStruct();
+		return StaticStruct();
 	}
+	virtual FAuraGameplayEffectContext* Duplicate() const override
+	{
+		FAuraGameplayEffectContext* NewContext = new FAuraGameplayEffectContext();
+		*NewContext = *this;
+		if (GetHitResult())
+		{
+			// Does a deep copy of the hit result
+			NewContext->AddHitResult(*GetHitResult(), true);
+		}
+		return NewContext;
+	}
+	
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
-	virtual FGameplayEffectContext* Duplicate() const override;
 
 
 	
@@ -44,6 +56,16 @@ protected:
 	UPROPERTY()
 	bool bIsBlockedHit = false;
 
+};
+
+template <>
+struct TStructOpsTypeTraits<FAuraGameplayEffectContext>: TStructOpsTypeTraitsBase2<FAuraGameplayEffectContext>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithCopy = true
+	};
 };
 
 
